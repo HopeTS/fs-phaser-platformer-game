@@ -17,6 +17,8 @@ class MainMenuScene extends DefaultScene {
 
   create() {
     super.create();
+
+    this.scene.start("PlayScene");
   }
 
   update() {

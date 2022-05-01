@@ -18,9 +18,7 @@ class DefaultScene extends Phaser.Scene {
 
   preload() {}
 
-  create() {
-    this.add.image(0, 0, "sky").setOrigin(0);
-  }
+  create() {}
 
   update() {}
 

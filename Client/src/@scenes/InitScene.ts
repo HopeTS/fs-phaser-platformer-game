@@ -13,7 +13,9 @@ class InitScene extends Phaser.Scene {
   //////////////////////////////////////////////////////////////////////////////
 
   preload() {
-    this.load.image("sky", "@assets/images/backgrounds/sky.png");
+    this.load.tilemapTiledJSON("map-1", "@assets/maps/crystal_world_map.json");
+    this.load.image("tiles-1", "@assets/maps/main_lev_build_1.png");
+    this.load.image("tiles-2", "@assets/maps/main_lev_build_2.png");
   }
 
   create() {

@@ -8,7 +8,7 @@ import { baseGameConfig } from "@config";
 import * as Scenes from "@scenes";
 
 /** All scenes list */
-const scenes = [Scenes.InitScene, Scenes.MainMenuScene];
+const scenes = [Scenes.InitScene, Scenes.MainMenuScene, Scenes.PlayScene];
 
 /** Initialize scenes */
 const initScenes = () => scenes.map((scene) => new scene());
