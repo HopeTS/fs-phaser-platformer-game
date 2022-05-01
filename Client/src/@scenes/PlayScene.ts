@@ -17,13 +17,8 @@ class PlayScene extends DefaultScene {
   create() {
     super.create();
 
-    const map = this.make.tilemap({ key: "map-1" });
-    const tileset1 = map.addTilesetImage("main_lev_build_1", "tiles-1");
-    const tileset2 = map.addTilesetImage("main_lev_build_2", "tiles-2");
-
-    map.createLayer("environment", tileset1);
-    map.createLayer("platforms", [tileset1, tileset2]);
-    console.log("Play scene map", map);
+    const map = this.createMap();
+    const { environment, platforms } = this.createLayers(map);
   }
 
   update() {
@@ -37,6 +32,23 @@ class PlayScene extends DefaultScene {
   //////////////////////////////////////////////////////////////////////////////
   // BEGIN LOGIC FUNCTIONS
   //////////////////////////////////////////////////////////////////////////////
+
+  /** Create / configure map */
+  createMap() {
+    const map = this.make.tilemap({ key: "map-1" });
+    map.addTilesetImage("main_lev_build_1", "tiles-1");
+    map.addTilesetImage("main_lev_build_2", "tiles-2");
+
+    return map;
+  }
+
+  /** Create layers */
+  createLayers(map: Phaser.Tilemaps.Tilemap) {
+    const tileset = map.getTileset("main_lev_build_1");
+    const environment = map.createLayer("environment", tileset);
+    const platforms = map.createLayer("platforms", tileset);
+    return { environment, platforms };
+  }
 
   //////////////////////////////////////////////////////////////////////////////
   // END LOGIC FUNCTIONS
