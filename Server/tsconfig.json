@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "types": ["node"],
+    "target": "es6",
+    "module": "CommonJS",
+    "lib": ["DOM", "DOM.Iterable", "ES6", "ScriptHost"],
+    "sourceMap": true,
+    "baseUrl": ".",
+    "esModuleInterop": true
+  },
+  "include": ["."],
+  "exclude": ["node_modules"],
+  "ts-node": {
+    "require": ["tsconfig-paths/register"]
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "CommonJS",
+    "lib": ["DOM", "DOM.Iterable", "ES6", "ScriptHost"],
+    "sourceMap": true,
+    "outDir": "build",
+    "baseUrl": "src",
+    "resolveJsonModule": true,
+    "esModuleInterop": true
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}
