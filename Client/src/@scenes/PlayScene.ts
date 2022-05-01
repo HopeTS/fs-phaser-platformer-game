@@ -51,7 +51,7 @@ class PlayScene extends DefaultScene {
 
     // Collision layers
     const platformColliders = map.createLayer("platform_colliders", tileset);
-    platformColliders.setCollisionByExclusion([-1], true);
+    platformColliders.setCollisionByProperty({ collides: true });
 
     // Static layers
     const environment = map.createLayer("environment", tileset);
