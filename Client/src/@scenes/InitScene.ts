@@ -13,9 +13,8 @@ class InitScene extends Phaser.Scene {
   //////////////////////////////////////////////////////////////////////////////
 
   preload() {
-    this.load.tilemapTiledJSON("map-1", "@assets/maps/crystal_world_map.json");
-    this.load.image("tiles-1", "@assets/maps/main_lev_build_1.png");
-    this.load.image("tiles-2", "@assets/maps/main_lev_build_2.png");
+    this.loadMap1();
+    this.loadPlayer();
   }
 
   create() {
@@ -31,6 +30,18 @@ class InitScene extends Phaser.Scene {
   //////////////////////////////////////////////////////////////////////////////
   // BEGIN LOGIC FUNCTIONS
   //////////////////////////////////////////////////////////////////////////////
+
+  /** Load map-1 */
+  loadMap1() {
+    this.load.tilemapTiledJSON("map-1", "@assets/maps/crystal_world_map.json");
+    this.load.image("tiles-1", "@assets/maps/main_lev_build_1.png");
+    this.load.image("tiles-2", "@assets/maps/main_lev_build_2.png");
+  }
+
+  /** Load player */
+  loadPlayer() {
+    this.load.image("player", "@assets/player/movements/idle01.png");
+  }
 
   //////////////////////////////////////////////////////////////////////////////
   // END LOGIC FUNCTIONS

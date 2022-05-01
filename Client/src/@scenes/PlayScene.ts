@@ -18,7 +18,9 @@ class PlayScene extends DefaultScene {
     super.create();
 
     const map = this.createMap();
-    const { environment, platforms } = this.createLayers(map);
+    const layers = this.createLayers(map);
+
+    this.createPlayer();
   }
 
   update() {
@@ -47,7 +49,15 @@ class PlayScene extends DefaultScene {
     const tileset = map.getTileset("main_lev_build_1");
     const environment = map.createLayer("environment", tileset);
     const platforms = map.createLayer("platforms", tileset);
+
     return { environment, platforms };
+  }
+
+  /** Create player */
+  createPlayer() {
+    const player = this.physics.add.sprite(100, 250, "player");
+    player.body.setGravityY(500);
+    player.setCollideWorldBounds(true);
   }
 
   //////////////////////////////////////////////////////////////////////////////
