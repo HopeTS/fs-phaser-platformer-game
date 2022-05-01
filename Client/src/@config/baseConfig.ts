@@ -1,6 +1,6 @@
 /** Base configuration variables */
 const baseConfig = {
-  screenWidth: 800,
+  screenWidth: 1200,
   screenHeight: 600,
 };
 
