@@ -20,7 +20,8 @@ class PlayScene extends DefaultScene {
     const map = this.createMap();
     const layers = this.createLayers(map);
 
-    this.createPlayer();
+    const player = this.createPlayer();
+    this.physics.add.collider(player, layers.platformColliders);
   }
 
   update() {
@@ -47,10 +48,16 @@ class PlayScene extends DefaultScene {
   /** Create layers */
   createLayers(map: Phaser.Tilemaps.Tilemap) {
     const tileset = map.getTileset("main_lev_build_1");
+
+    // Collision layers
+    const platformColliders = map.createLayer("platform_colliders", tileset);
+    platformColliders.setCollisionByExclusion([-1], true);
+
+    // Static layers
     const environment = map.createLayer("environment", tileset);
     const platforms = map.createLayer("platforms", tileset);
 
-    return { environment, platforms };
+    return { environment, platforms, platformColliders };
   }
 
   /** Create player */
@@ -58,6 +65,8 @@ class PlayScene extends DefaultScene {
     const player = this.physics.add.sprite(100, 250, "player");
     player.body.setGravityY(500);
     player.setCollideWorldBounds(true);
+
+    return player;
   }
 
   //////////////////////////////////////////////////////////////////////////////
