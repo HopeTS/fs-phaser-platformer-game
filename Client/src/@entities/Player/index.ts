@@ -25,7 +25,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     // Configure custom player attributes
     this.gravity = 500;
     this.moveSpeed = 200;
-    this.jumpStrength = 180;
+    this.jumpStrength = 250;
 
     this.init();
     this.setEventListeners();
@@ -46,25 +46,20 @@ class Player extends Phaser.Physics.Arcade.Sprite {
   /** Handle player controls */
   executeInputControls() {
     const { left, right, space, up } = this.cursors;
+    const onFloor = this.body.onFloor();
 
-    // Left arrow key
+    // Running / lateral movement
     if (left.isDown) {
       this.setVelocityX(-this.moveSpeed);
-    }
-
-    // Right arrow key
-    else if (right.isDown) {
+    } else if (right.isDown) {
       this.setVelocityX(this.moveSpeed);
-    }
-
-    // Spacebar
-    else if (space.isDown || up.isDown) {
-      this.setVelocityY(-this.jumpStrength);
-    }
-
-    // If no key is pressed
-    else {
+    } else {
       this.setVelocityX(0);
+    }
+
+    // Jumping
+    if ((space.isDown || up.isDown) && onFloor) {
+      this.setVelocityY(-this.jumpStrength);
     }
   }
 
@@ -95,14 +90,13 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
   /** Determine which animation to run */
   setAnimation() {
-    // Should player run
+    // Should player run or idle?
     this.body.velocity.x === 0
       ? this.play("idle", true)
       : this.play("run", true);
 
-    // Should player sprite face left
+    // Should player sprite face left or right?
     if (this.body.velocity.x < 0) this.flipX = true;
-    // Should player sprite face right
     else if (this.body.velocity.x > 0) this.flipX = false;
   }
 
