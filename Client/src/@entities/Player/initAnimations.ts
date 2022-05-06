@@ -1,7 +1,7 @@
 /** Add all player animations */
 export default (anims: Phaser.Animations.AnimationManager) => {
   // idle
-  anims.create({
+  const idle = anims.create({
     key: "idle",
     frames: anims.generateFrameNumbers("player", {
       start: 0,
@@ -13,7 +13,7 @@ export default (anims: Phaser.Animations.AnimationManager) => {
   });
 
   // run
-  anims.create({
+  const run = anims.create({
     key: "run",
     frames: anims.generateFrameNumbers("player", {
       start: 9,
@@ -23,4 +23,8 @@ export default (anims: Phaser.Animations.AnimationManager) => {
     duration: 800,
     repeat: -1,
   });
+
+  // Validate animations
+  if (!idle) console.error("Something went wrong initializing idle animation");
+  if (!run) console.error("Something went wrong initializing run animation");
 };

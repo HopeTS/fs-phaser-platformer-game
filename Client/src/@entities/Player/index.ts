@@ -50,25 +50,21 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     // Left arrow key
     if (left.isDown) {
       this.setVelocityX(-this.moveSpeed);
-      this.play("run", true);
     }
 
     // Right arrow key
     else if (right.isDown) {
       this.setVelocityX(this.moveSpeed);
-      this.play("run", true);
     }
 
     // Spacebar
     else if (space.isDown || up.isDown) {
       this.setVelocityY(-this.jumpStrength);
-      this.stop();
     }
 
     // If no key is pressed
     else {
       this.setVelocityX(0);
-      this.play("idle", true);
     }
   }
 
@@ -94,6 +90,20 @@ class Player extends Phaser.Physics.Arcade.Sprite {
   /** Custom update function for scene's update method */
   sceneUpdate() {
     this.executeInputControls();
+    this.setAnimation();
+  }
+
+  /** Determine which animation to run */
+  setAnimation() {
+    // Should player run
+    this.body.velocity.x === 0
+      ? this.play("idle", true)
+      : this.play("run", true);
+
+    // Should player sprite face left
+    if (this.body.velocity.x < 0) this.flipX = true;
+    // Should player sprite face right
+    else if (this.body.velocity.x > 0) this.flipX = false;
   }
 
   /** Set up scene event listeners */
