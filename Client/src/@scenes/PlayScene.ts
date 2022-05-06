@@ -1,9 +1,30 @@
+import Phaser from "phaser";
+
 import { DefaultScene } from "@scenes/templates";
+import { Player } from "@entities";
 
 /** Template for scenes ;) */
-class PlayScene extends DefaultScene {
+export class PlayScene extends DefaultScene {
+  /** Basic controls */
+  private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
+
+  /** Player move speed */
+  private playerMoveSpeed: number;
+
+  /** Map layers */
+  private layers: {
+    environment: Phaser.Tilemaps.TilemapLayer;
+    platforms: Phaser.Tilemaps.TilemapLayer;
+    platformColliders: Phaser.Tilemaps.TilemapLayer;
+  };
+
+  /** Player */
+  private player: Player;
+
   constructor() {
     super("PlayScene");
+
+    this.playerMoveSpeed = 200;
   }
 
   //////////////////////////////////////////////////////////////////////////////
@@ -18,10 +39,13 @@ class PlayScene extends DefaultScene {
     super.create();
 
     const map = this.createMap();
-    const layers = this.createLayers(map);
+    this.layers = this.createLayers(map);
 
-    const player = this.createPlayer();
-    this.physics.add.collider(player, layers.platformColliders);
+    this.player = this.createPlayer();
+
+    this.physics.add.collider(this.player, this.layers.platformColliders);
+
+    this.cursors = this.input.keyboard.createCursorKeys();
   }
 
   update() {
@@ -62,11 +86,7 @@ class PlayScene extends DefaultScene {
 
   /** Create player */
   createPlayer() {
-    const player = this.physics.add.sprite(100, 250, "player");
-    player.body.setGravityY(500);
-    player.setCollideWorldBounds(true);
-
-    return player;
+    return new Player(this, 100, 250);
   }
 
   //////////////////////////////////////////////////////////////////////////////
