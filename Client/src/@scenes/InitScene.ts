@@ -41,6 +41,11 @@ class InitScene extends Phaser.Scene {
   /** Load player */
   loadPlayer() {
     this.load.image("player", "@assets/player/movements/idle01.png");
+    this.load.spritesheet("player", "@assets/player/move_sprite_1.png", {
+      frameWidth: 32,
+      frameHeight: 38,
+      spacing: 32,
+    });
   }
 
   //////////////////////////////////////////////////////////////////////////////

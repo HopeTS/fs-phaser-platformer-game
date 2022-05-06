@@ -1,5 +1,7 @@
 import Phaser from "phaser";
 
+import initAnimations from "./initAnimations";
+
 class Player extends Phaser.Physics.Arcade.Sprite {
   body: Phaser.Physics.Arcade.Body;
   cursors: Phaser.Types.Input.Keyboard.CursorKeys;
@@ -48,33 +50,45 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     // Left arrow key
     if (left.isDown) {
       this.setVelocityX(-this.moveSpeed);
+      this.play("run", true);
     }
 
     // Right arrow key
     else if (right.isDown) {
       this.setVelocityX(this.moveSpeed);
+      this.play("run", true);
     }
 
     // Spacebar
     else if (space.isDown || up.isDown) {
       this.setVelocityY(-this.jumpStrength);
+      this.stop();
     }
 
     // If no key is pressed
     else {
       this.setVelocityX(0);
+      this.play("idle", true);
     }
   }
 
   /** Initialize Player instance */
   init() {
-    // Add Player to scene
-    this.scene.add.existing(this);
-    this.scene.physics.add.existing(this);
+    /** Place player entity in scene */
+    const addPlayerToScene = () => {
+      this.scene.add.existing(this);
+      this.scene.physics.add.existing(this);
+    };
 
-    // Configure physics
-    this.body.setGravityY(500);
-    this.setCollideWorldBounds(true);
+    /** Configure scene physics */
+    const configurePhysics = () => {
+      this.body.setGravityY(500);
+      this.setCollideWorldBounds(true);
+    };
+
+    addPlayerToScene();
+    configurePhysics();
+    initAnimations(this.scene.anims);
   }
 
   /** Custom update function for scene's update method */
