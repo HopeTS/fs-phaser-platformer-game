@@ -8,8 +8,8 @@ export default (anims: Phaser.Animations.AnimationManager) => {
       end: 8,
     }),
     frameRate: 10,
-    duration: 800,
     repeat: -1,
+    duration: 800,
   });
 
   // run
@@ -20,11 +20,21 @@ export default (anims: Phaser.Animations.AnimationManager) => {
       end: 16,
     }),
     frameRate: 8,
-    duration: 800,
     repeat: -1,
+    duration: 800,
+  });
+
+  // jump
+  const jump = anims.create({
+    key: "jump",
+    frames: anims.generateFrameNumbers("player", { start: 17, end: 23 }),
+    frameRate: 8,
+    repeat: -1,
+    duration: 800,
   });
 
   // Validate animations
   if (!idle) console.error("Something went wrong initializing idle animation");
   if (!run) console.error("Something went wrong initializing run animation");
+  if (!jump) console.error("Something went wrong initializing jump animation");
 };

@@ -12,7 +12,7 @@ export class PlayScene extends DefaultScene {
   private playerMoveSpeed: number;
 
   /** Map layers */
-  private layers: {
+  public layers: {
     environment: Phaser.Tilemaps.TilemapLayer;
     platforms: Phaser.Tilemaps.TilemapLayer;
     platformColliders: Phaser.Tilemaps.TilemapLayer;
@@ -42,8 +42,6 @@ export class PlayScene extends DefaultScene {
     this.layers = this.createLayers(map);
 
     this.player = this.createPlayer();
-
-    this.physics.add.collider(this.player, this.layers.platformColliders);
 
     this.cursors = this.input.keyboard.createCursorKeys();
   }

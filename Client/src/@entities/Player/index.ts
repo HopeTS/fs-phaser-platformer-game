@@ -2,10 +2,13 @@ import Phaser from "phaser";
 
 import initAnimations from "./initAnimations";
 import config from "./config";
+import { PlayScene } from "@scenes";
+import { collidable } from "@mixins";
 
 class Player extends Phaser.Physics.Arcade.Sprite {
   body: Phaser.Physics.Arcade.Body;
   cursors: Phaser.Types.Input.Keyboard.CursorKeys;
+  scene: PlayScene;
 
   /** Gravity strength */
   public gravity: number;
@@ -16,11 +19,15 @@ class Player extends Phaser.Physics.Arcade.Sprite {
   /** Strength of player's jump */
   public jumpStrength: number;
 
-  /** Number of midair jumps the player has left */
+  /** Number of jumps the player has left */
   public jumpCount: number;
 
-  constructor(scene: Phaser.Scene, x: number, y: number, frame?) {
+  public addCollider: typeof collidable.addCollider;
+
+  constructor(scene: PlayScene, x: number, y: number, frame?) {
     super(scene, x, y, "player", frame && frame);
+
+    Object.assign(this, collidable);
 
     // Connect entity to game / IO
     this.scene = scene;
@@ -72,6 +79,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.jumpCount--;
     };
 
+    // Reset jump count if on the ground
+    if (this.body.onFloor() && this.jumpCount !== config.jumpCount)
+      this.jumpCount = config.jumpCount;
+
     // Can't jump without a jump count
     if (this.jumpCount < 1) return;
 
@@ -82,31 +93,22 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     if (Phaser.Input.Keyboard.JustDown(this.cursors.up)) executeJump();
   }
 
-  /** Determine whether or not to reset player's jump count */
-  handleJumpReset() {
-    if (this.body.onFloor() && this.jumpCount !== config.jumpCount)
-      this.jumpCount = config.jumpCount;
-  }
-
   /** Handle player running */
   handleRunning() {}
 
   /** Initialize Player instance */
   init() {
-    /** Place player entity in scene */
-    const addPlayerToScene = () => {
-      this.scene.add.existing(this);
-      this.scene.physics.add.existing(this);
-    };
+    // Add player colliders
+    this.addCollider(this.scene.layers.platformColliders);
 
-    /** Configure scene physics */
-    const configurePhysics = () => {
-      this.body.setGravityY(500);
-      this.setCollideWorldBounds(true);
-    };
+    // Place player entity in scene
+    this.scene.add.existing(this);
+    this.scene.physics.add.existing(this);
 
-    addPlayerToScene();
-    configurePhysics();
+    // Configure scene physics
+    this.body.setGravityY(this.gravity);
+    this.setCollideWorldBounds(true);
+
     initAnimations(this.scene.anims);
   }
 
@@ -114,19 +116,20 @@ class Player extends Phaser.Physics.Arcade.Sprite {
   sceneUpdate() {
     this.handleInputControls();
     this.setAnimation();
-    this.handleJumpReset();
   }
 
   /** Determine which animation to run */
   setAnimation() {
-    // Should player run or idle?
-    this.body.velocity.x === 0
-      ? this.play("idle", true)
-      : this.play("run", true);
-
-    // Should player sprite face left or right?
+    // Make sprite face right or left
     if (this.body.velocity.x < 0) this.flipX = true;
     else if (this.body.velocity.x > 0) this.flipX = false;
+
+    // Set proper animation
+    this.body.onFloor()
+      ? this.body.velocity.x === 0
+        ? this.play("idle", true)
+        : this.play("run", true)
+      : this.play("jump", false);
   }
 
   /** Set up scene event listeners */
