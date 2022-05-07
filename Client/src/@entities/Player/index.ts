@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 
 import initAnimations from "./initAnimations";
+import config from "./config";
 
 class Player extends Phaser.Physics.Arcade.Sprite {
   body: Phaser.Physics.Arcade.Body;
@@ -15,6 +16,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
   /** Strength of player's jump */
   public jumpStrength: number;
 
+  /** Number of midair jumps the player has left */
+  public jumpCount: number;
+
   constructor(scene: Phaser.Scene, x: number, y: number, frame?) {
     super(scene, x, y, "player", frame && frame);
 
@@ -23,9 +27,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.cursors = this.scene.input.keyboard.createCursorKeys();
 
     // Configure custom player attributes
-    this.gravity = 500;
-    this.moveSpeed = 200;
-    this.jumpStrength = 250;
+    this.gravity = config.gravity;
+    this.moveSpeed = config.moveSpeed;
+    this.jumpStrength = config.jumpStrength;
+    this.jumpCount = config.jumpCount;
 
     this.init();
     this.setEventListeners();
@@ -44,9 +49,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
   //////////////////////////////////////////////////////////////////////////////
 
   /** Handle player controls */
-  executeInputControls() {
+  handleInputControls() {
     const { left, right, space, up } = this.cursors;
-    const onFloor = this.body.onFloor();
 
     // Running / lateral movement
     if (left.isDown) {
@@ -57,11 +61,35 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.setVelocityX(0);
     }
 
-    // Jumping
-    if ((space.isDown || up.isDown) && onFloor) {
-      this.setVelocityY(-this.jumpStrength);
-    }
+    this.handleJump();
   }
+
+  /** Handle player jumping */
+  handleJump() {
+    /** Execute the jump */
+    const executeJump = () => {
+      this.body.setVelocityY(-this.jumpStrength);
+      this.jumpCount--;
+    };
+
+    // Can't jump without a jump count
+    if (this.jumpCount < 1) return;
+
+    // If space key just pressed
+    if (Phaser.Input.Keyboard.JustDown(this.cursors.space)) executeJump();
+
+    // Or if up key just pressed
+    if (Phaser.Input.Keyboard.JustDown(this.cursors.up)) executeJump();
+  }
+
+  /** Determine whether or not to reset player's jump count */
+  handleJumpReset() {
+    if (this.body.onFloor() && this.jumpCount !== config.jumpCount)
+      this.jumpCount = config.jumpCount;
+  }
+
+  /** Handle player running */
+  handleRunning() {}
 
   /** Initialize Player instance */
   init() {
@@ -84,8 +112,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
   /** Custom update function for scene's update method */
   sceneUpdate() {
-    this.executeInputControls();
+    this.handleInputControls();
     this.setAnimation();
+    this.handleJumpReset();
   }
 
   /** Determine which animation to run */
